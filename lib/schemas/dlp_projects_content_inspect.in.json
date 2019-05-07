@@ -1,0 +1,656 @@
+{
+    "type": "object",
+    "properties": {
+        "parent": {
+            "required": true,
+            "type": "string"
+        },
+        "access_token": {
+            "type": "string"
+        },
+        "alt": {
+            "type": "string",
+            "enum": [
+                "json",
+                "media",
+                "proto"
+            ],
+            "default": "json"
+        },
+        "callback": {
+            "type": "string"
+        },
+        "fields": {
+            "type": "string"
+        },
+        "key": {
+            "type": "string"
+        },
+        "oauth_token": {
+            "type": "string"
+        },
+        "prettyPrint": {
+            "type": "boolean",
+            "default": true
+        },
+        "quotaUser": {
+            "type": "string"
+        },
+        "uploadType": {
+            "type": "string"
+        },
+        "upload_protocol": {
+            "type": "string"
+        },
+        "requestBody": {
+            "description": "Request to search for potentially sensitive info in a ContentItem.",
+            "properties": {
+                "inspectConfig": {
+                    "description": "Configuration for the inspector. What specified here will override\nthe template referenced by the inspect_template_name argument.",
+                    "properties": {
+                        "contentOptions": {
+                            "description": "List of options defining data content to scan.\nIf empty, text, images, and other content will be included.",
+                            "items": {
+                                "enum": [
+                                    "CONTENT_UNSPECIFIED",
+                                    "CONTENT_TEXT",
+                                    "CONTENT_IMAGE"
+                                ],
+                                "type": "string"
+                            },
+                            "type": "array"
+                        },
+                        "customInfoTypes": {
+                            "description": "CustomInfoTypes provided by the user. See\nhttps://cloud.google.com/dlp/docs/creating-custom-infotypes to learn more.",
+                            "items": {
+                                "description": "Custom information type provided by the user. Used to find domain-specific\nsensitive information configurable to the data in question.",
+                                "properties": {
+                                    "detectionRules": {
+                                        "description": "Set of detection rules to apply to all findings of this CustomInfoType.\nRules are applied in order that they are specified. Not supported for the\n`surrogate_type` CustomInfoType.",
+                                        "items": {
+                                            "description": "Rule for modifying a CustomInfoType to alter behavior under certain\ncircumstances, depending on the specific details of the rule. Not supported\nfor the `surrogate_type` custom info type.",
+                                            "properties": {
+                                                "hotwordRule": {
+                                                    "description": "Hotword-based detection rule.",
+                                                    "properties": {
+                                                        "hotwordRegex": {
+                                                            "description": "Regular expression pattern defining what qualifies as a hotword.",
+                                                            "properties": {
+                                                                "groupIndexes": {
+                                                                    "description": "The index of the submatch to extract as findings. When not\nspecified, the entire match is returned. No more than 3 may be included.",
+                                                                    "items": {
+                                                                        "format": "int32",
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "type": "array"
+                                                                },
+                                                                "pattern": {
+                                                                    "description": "Pattern defining the regular expression. Its syntax\n(https://github.com/google/re2/wiki/Syntax) can be found under the\ngoogle/re2 repository on GitHub.",
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "likelihoodAdjustment": {
+                                                            "description": "Likelihood adjustment to apply to all matching findings.",
+                                                            "properties": {
+                                                                "fixedLikelihood": {
+                                                                    "description": "Set the likelihood of a finding to a fixed value.",
+                                                                    "enum": [
+                                                                        "LIKELIHOOD_UNSPECIFIED",
+                                                                        "VERY_UNLIKELY",
+                                                                        "UNLIKELY",
+                                                                        "POSSIBLE",
+                                                                        "LIKELY",
+                                                                        "VERY_LIKELY"
+                                                                    ],
+                                                                    "type": "string"
+                                                                },
+                                                                "relativeLikelihood": {
+                                                                    "description": "Increase or decrease the likelihood by the specified number of\nlevels. For example, if a finding would be `POSSIBLE` without the\ndetection rule and `relative_likelihood` is 1, then it is upgraded to\n`LIKELY`, while a value of -1 would downgrade it to `UNLIKELY`.\nLikelihood may never drop below `VERY_UNLIKELY` or exceed\n`VERY_LIKELY`, so applying an adjustment of 1 followed by an\nadjustment of -1 when base likelihood is `VERY_LIKELY` will result in\na final likelihood of `LIKELY`.",
+                                                                    "format": "int32",
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "proximity": {
+                                                            "description": "Proximity of the finding within which the entire hotword must reside.\nThe total length of the window cannot exceed 1000 characters. Note that\nthe finding itself will be included in the window, so that hotwords may\nbe used to match substrings of the finding itself. For example, the\ncertainty of a phone number regex \"\\(\\d{3}\\) \\d{3}-\\d{4}\" could be\nadjusted upwards if the area code is known to be the local area code of\na company office using the hotword regex \"\\(xxx\\)\", where \"xxx\"\nis the area code in question.",
+                                                            "properties": {
+                                                                "windowAfter": {
+                                                                    "description": "Number of characters after the finding to consider.",
+                                                                    "format": "int32",
+                                                                    "type": "integer"
+                                                                },
+                                                                "windowBefore": {
+                                                                    "description": "Number of characters before the finding to consider.",
+                                                                    "format": "int32",
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "type": "array"
+                                    },
+                                    "dictionary": {
+                                        "description": "A list of phrases to detect as a CustomInfoType.",
+                                        "properties": {
+                                            "cloudStoragePath": {
+                                                "description": "Newline-delimited file of words in Cloud Storage. Only a single file\nis accepted.",
+                                                "properties": {
+                                                    "path": {
+                                                        "description": "A url representing a file or path (no wildcards) in Cloud Storage.\nExample: gs://[BUCKET_NAME]/dictionary.txt",
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "wordList": {
+                                                "description": "List of words or phrases to search for.",
+                                                "properties": {
+                                                    "words": {
+                                                        "description": "Words or phrases defining the dictionary. The dictionary must contain\nat least one phrase and every phrase must contain at least 2 characters\nthat are letters or digits. [required]",
+                                                        "items": {
+                                                            "type": "string"
+                                                        },
+                                                        "type": "array"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "exclusionType": {
+                                        "description": "If set to EXCLUSION_TYPE_EXCLUDE this infoType will not cause a finding\nto be returned. It still can be used for rules matching.",
+                                        "enum": [
+                                            "EXCLUSION_TYPE_UNSPECIFIED",
+                                            "EXCLUSION_TYPE_EXCLUDE"
+                                        ],
+                                        "type": "string"
+                                    },
+                                    "infoType": {
+                                        "description": "CustomInfoType can either be a new infoType, or an extension of built-in\ninfoType, when the name matches one of existing infoTypes and that infoType\nis specified in `InspectContent.info_types` field. Specifying the latter\nadds findings to the one detected by the system. If built-in info type is\nnot specified in `InspectContent.info_types` list then the name is treated\nas a custom info type.",
+                                        "properties": {
+                                            "name": {
+                                                "description": "Name of the information type. Either a name of your choosing when\ncreating a CustomInfoType, or one of the names listed\nat https://cloud.google.com/dlp/docs/infotypes-reference when specifying\na built-in type. InfoType names should conform to the pattern\n[a-zA-Z0-9_]{1,64}.",
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "likelihood": {
+                                        "description": "Likelihood to return for this CustomInfoType. This base value can be\naltered by a detection rule if the finding meets the criteria specified by\nthe rule. Defaults to `VERY_LIKELY` if not specified.",
+                                        "enum": [
+                                            "LIKELIHOOD_UNSPECIFIED",
+                                            "VERY_UNLIKELY",
+                                            "UNLIKELY",
+                                            "POSSIBLE",
+                                            "LIKELY",
+                                            "VERY_LIKELY"
+                                        ],
+                                        "type": "string"
+                                    },
+                                    "regex": {
+                                        "description": "Regular expression based CustomInfoType.",
+                                        "properties": {
+                                            "groupIndexes": {
+                                                "description": "The index of the submatch to extract as findings. When not\nspecified, the entire match is returned. No more than 3 may be included.",
+                                                "items": {
+                                                    "format": "int32",
+                                                    "type": "integer"
+                                                },
+                                                "type": "array"
+                                            },
+                                            "pattern": {
+                                                "description": "Pattern defining the regular expression. Its syntax\n(https://github.com/google/re2/wiki/Syntax) can be found under the\ngoogle/re2 repository on GitHub.",
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "storedType": {
+                                        "description": "Load an existing `StoredInfoType` resource for use in\n`InspectDataSource`. Not currently supported in `InspectContent`.",
+                                        "properties": {
+                                            "createTime": {
+                                                "description": "Timestamp indicating when the version of the `StoredInfoType` used for\ninspection was created. Output-only field, populated by the system.",
+                                                "format": "google-datetime",
+                                                "type": "string"
+                                            },
+                                            "name": {
+                                                "description": "Resource name of the requested `StoredInfoType`, for example\n`organizations/433245324/storedInfoTypes/432452342` or\n`projects/project-id/storedInfoTypes/432452342`.",
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "surrogateType": {
+                                        "description": "Message for detecting output from deidentification transformations that\nsupport reversing.",
+                                        "properties": {},
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "type": "array"
+                        },
+                        "excludeInfoTypes": {
+                            "description": "When true, excludes type information of the findings.",
+                            "type": "boolean"
+                        },
+                        "includeQuote": {
+                            "description": "When true, a contextual quote from the data that triggered a finding is\nincluded in the response; see Finding.quote.",
+                            "type": "boolean"
+                        },
+                        "infoTypes": {
+                            "description": "Restricts what info_types to look for. The values must correspond to\nInfoType values returned by ListInfoTypes or listed at\nhttps://cloud.google.com/dlp/docs/infotypes-reference.\n\nWhen no InfoTypes or CustomInfoTypes are specified in a request, the\nsystem may automatically choose what detectors to run. By default this may\nbe all types, but may change over time as detectors are updated.\n\nThe special InfoType name \"ALL_BASIC\" can be used to trigger all detectors,\nbut may change over time as new InfoTypes are added. If you need precise\ncontrol and predictability as to what detectors are run you should specify\nspecific InfoTypes listed in the reference.",
+                            "items": {
+                                "description": "Type of information detected by the API.",
+                                "properties": {
+                                    "name": {
+                                        "description": "Name of the information type. Either a name of your choosing when\ncreating a CustomInfoType, or one of the names listed\nat https://cloud.google.com/dlp/docs/infotypes-reference when specifying\na built-in type. InfoType names should conform to the pattern\n[a-zA-Z0-9_]{1,64}.",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "type": "array"
+                        },
+                        "limits": {
+                            "properties": {
+                                "maxFindingsPerInfoType": {
+                                    "description": "Configuration of findings limit given for specified infoTypes.",
+                                    "items": {
+                                        "description": "Max findings configuration per infoType, per content item or long\nrunning DlpJob.",
+                                        "properties": {
+                                            "infoType": {
+                                                "description": "Type of information the findings limit applies to. Only one limit per\ninfo_type should be provided. If InfoTypeLimit does not have an\ninfo_type, the DLP API applies the limit against all info_types that\nare found but not specified in another InfoTypeLimit.",
+                                                "properties": {
+                                                    "name": {
+                                                        "description": "Name of the information type. Either a name of your choosing when\ncreating a CustomInfoType, or one of the names listed\nat https://cloud.google.com/dlp/docs/infotypes-reference when specifying\na built-in type. InfoType names should conform to the pattern\n[a-zA-Z0-9_]{1,64}.",
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "maxFindings": {
+                                                "description": "Max findings limit for the given infoType.",
+                                                "format": "int32",
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                },
+                                "maxFindingsPerItem": {
+                                    "description": "Max number of findings that will be returned for each item scanned.\nWhen set within `InspectDataSourceRequest`,\nthe maximum returned is 2000 regardless if this is set higher.\nWhen set within `InspectContentRequest`, this field is ignored.",
+                                    "format": "int32",
+                                    "type": "integer"
+                                },
+                                "maxFindingsPerRequest": {
+                                    "description": "Max number of findings that will be returned per request/job.\nWhen set within `InspectContentRequest`, the maximum returned is 2000\nregardless if this is set higher.",
+                                    "format": "int32",
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "minLikelihood": {
+                            "description": "Only returns findings equal or above this threshold. The default is\nPOSSIBLE.\nSee https://cloud.google.com/dlp/docs/likelihood to learn more.",
+                            "enum": [
+                                "LIKELIHOOD_UNSPECIFIED",
+                                "VERY_UNLIKELY",
+                                "UNLIKELY",
+                                "POSSIBLE",
+                                "LIKELY",
+                                "VERY_LIKELY"
+                            ],
+                            "type": "string"
+                        },
+                        "ruleSet": {
+                            "description": "Set of rules to apply to the findings for this InspectConfig.\nExclusion rules, contained in the set are executed in the end, other\nrules are executed in the order they are specified for each info type.",
+                            "items": {
+                                "description": "Rule set for modifying a set of infoTypes to alter behavior under certain\ncircumstances, depending on the specific details of the rules within the set.",
+                                "properties": {
+                                    "infoTypes": {
+                                        "description": "List of infoTypes this rule set is applied to.",
+                                        "items": {
+                                            "description": "Type of information detected by the API.",
+                                            "properties": {
+                                                "name": {
+                                                    "description": "Name of the information type. Either a name of your choosing when\ncreating a CustomInfoType, or one of the names listed\nat https://cloud.google.com/dlp/docs/infotypes-reference when specifying\na built-in type. InfoType names should conform to the pattern\n[a-zA-Z0-9_]{1,64}.",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "type": "array"
+                                    },
+                                    "rules": {
+                                        "description": "Set of rules to be applied to infoTypes. The rules are applied in order.",
+                                        "items": {
+                                            "description": "A single inspection rule to be applied to infoTypes, specified in\n`InspectionRuleSet`.",
+                                            "properties": {
+                                                "exclusionRule": {
+                                                    "description": "Exclusion rule.",
+                                                    "properties": {
+                                                        "dictionary": {
+                                                            "description": "Dictionary which defines the rule.",
+                                                            "properties": {
+                                                                "cloudStoragePath": {
+                                                                    "description": "Newline-delimited file of words in Cloud Storage. Only a single file\nis accepted.",
+                                                                    "properties": {
+                                                                        "path": {
+                                                                            "description": "A url representing a file or path (no wildcards) in Cloud Storage.\nExample: gs://[BUCKET_NAME]/dictionary.txt",
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                },
+                                                                "wordList": {
+                                                                    "description": "List of words or phrases to search for.",
+                                                                    "properties": {
+                                                                        "words": {
+                                                                            "description": "Words or phrases defining the dictionary. The dictionary must contain\nat least one phrase and every phrase must contain at least 2 characters\nthat are letters or digits. [required]",
+                                                                            "items": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "type": "array"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "excludeInfoTypes": {
+                                                            "description": "Set of infoTypes for which findings would affect this rule.",
+                                                            "properties": {
+                                                                "infoTypes": {
+                                                                    "description": "InfoType list in ExclusionRule rule drops a finding when it overlaps or\ncontained within with a finding of an infoType from this list. For\nexample, for `InspectionRuleSet.info_types` containing \"PHONE_NUMBER\"` and\n`exclusion_rule` containing `exclude_info_types.info_types` with\n\"EMAIL_ADDRESS\" the phone number findings are dropped if they overlap\nwith EMAIL_ADDRESS finding.\nThat leads to \"555-222-2222@example.org\" to generate only a single\nfinding, namely email address.",
+                                                                    "items": {
+                                                                        "description": "Type of information detected by the API.",
+                                                                        "properties": {
+                                                                            "name": {
+                                                                                "description": "Name of the information type. Either a name of your choosing when\ncreating a CustomInfoType, or one of the names listed\nat https://cloud.google.com/dlp/docs/infotypes-reference when specifying\na built-in type. InfoType names should conform to the pattern\n[a-zA-Z0-9_]{1,64}.",
+                                                                                "type": "string"
+                                                                            }
+                                                                        },
+                                                                        "type": "object"
+                                                                    },
+                                                                    "type": "array"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "matchingType": {
+                                                            "description": "How the rule is applied, see MatchingType documentation for details.",
+                                                            "enum": [
+                                                                "MATCHING_TYPE_UNSPECIFIED",
+                                                                "MATCHING_TYPE_FULL_MATCH",
+                                                                "MATCHING_TYPE_PARTIAL_MATCH",
+                                                                "MATCHING_TYPE_INVERSE_MATCH"
+                                                            ],
+                                                            "type": "string"
+                                                        },
+                                                        "regex": {
+                                                            "description": "Regular expression which defines the rule.",
+                                                            "properties": {
+                                                                "groupIndexes": {
+                                                                    "description": "The index of the submatch to extract as findings. When not\nspecified, the entire match is returned. No more than 3 may be included.",
+                                                                    "items": {
+                                                                        "format": "int32",
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "type": "array"
+                                                                },
+                                                                "pattern": {
+                                                                    "description": "Pattern defining the regular expression. Its syntax\n(https://github.com/google/re2/wiki/Syntax) can be found under the\ngoogle/re2 repository on GitHub.",
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "hotwordRule": {
+                                                    "description": "Hotword-based detection rule.",
+                                                    "properties": {
+                                                        "hotwordRegex": {
+                                                            "description": "Regular expression pattern defining what qualifies as a hotword.",
+                                                            "properties": {
+                                                                "groupIndexes": {
+                                                                    "description": "The index of the submatch to extract as findings. When not\nspecified, the entire match is returned. No more than 3 may be included.",
+                                                                    "items": {
+                                                                        "format": "int32",
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "type": "array"
+                                                                },
+                                                                "pattern": {
+                                                                    "description": "Pattern defining the regular expression. Its syntax\n(https://github.com/google/re2/wiki/Syntax) can be found under the\ngoogle/re2 repository on GitHub.",
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "likelihoodAdjustment": {
+                                                            "description": "Likelihood adjustment to apply to all matching findings.",
+                                                            "properties": {
+                                                                "fixedLikelihood": {
+                                                                    "description": "Set the likelihood of a finding to a fixed value.",
+                                                                    "enum": [
+                                                                        "LIKELIHOOD_UNSPECIFIED",
+                                                                        "VERY_UNLIKELY",
+                                                                        "UNLIKELY",
+                                                                        "POSSIBLE",
+                                                                        "LIKELY",
+                                                                        "VERY_LIKELY"
+                                                                    ],
+                                                                    "type": "string"
+                                                                },
+                                                                "relativeLikelihood": {
+                                                                    "description": "Increase or decrease the likelihood by the specified number of\nlevels. For example, if a finding would be `POSSIBLE` without the\ndetection rule and `relative_likelihood` is 1, then it is upgraded to\n`LIKELY`, while a value of -1 would downgrade it to `UNLIKELY`.\nLikelihood may never drop below `VERY_UNLIKELY` or exceed\n`VERY_LIKELY`, so applying an adjustment of 1 followed by an\nadjustment of -1 when base likelihood is `VERY_LIKELY` will result in\na final likelihood of `LIKELY`.",
+                                                                    "format": "int32",
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "proximity": {
+                                                            "description": "Proximity of the finding within which the entire hotword must reside.\nThe total length of the window cannot exceed 1000 characters. Note that\nthe finding itself will be included in the window, so that hotwords may\nbe used to match substrings of the finding itself. For example, the\ncertainty of a phone number regex \"\\(\\d{3}\\) \\d{3}-\\d{4}\" could be\nadjusted upwards if the area code is known to be the local area code of\na company office using the hotword regex \"\\(xxx\\)\", where \"xxx\"\nis the area code in question.",
+                                                            "properties": {
+                                                                "windowAfter": {
+                                                                    "description": "Number of characters after the finding to consider.",
+                                                                    "format": "int32",
+                                                                    "type": "integer"
+                                                                },
+                                                                "windowBefore": {
+                                                                    "description": "Number of characters before the finding to consider.",
+                                                                    "format": "int32",
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "type": "array"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "type": "array"
+                        }
+                    },
+                    "type": "object"
+                },
+                "inspectTemplateName": {
+                    "description": "Optional template to use. Any configuration directly specified in\ninspect_config will override those set in the template. Singular fields\nthat are set in this request will replace their corresponding fields in the\ntemplate. Repeated fields are appended. Singular sub-messages and groups\nare recursively merged.",
+                    "type": "string"
+                },
+                "item": {
+                    "description": "The item to inspect.",
+                    "properties": {
+                        "byteItem": {
+                            "description": "Content data to inspect or redact. Replaces `type` and `data`.",
+                            "properties": {
+                                "data": {
+                                    "description": "Content data to inspect or redact.",
+                                    "format": "byte",
+                                    "type": "string"
+                                },
+                                "type": {
+                                    "description": "The type of data stored in the bytes string. Default will be TEXT_UTF8.",
+                                    "enum": [
+                                        "BYTES_TYPE_UNSPECIFIED",
+                                        "IMAGE",
+                                        "IMAGE_JPEG",
+                                        "IMAGE_BMP",
+                                        "IMAGE_PNG",
+                                        "IMAGE_SVG",
+                                        "TEXT_UTF8"
+                                    ],
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "table": {
+                            "description": "Structured content for inspection. See\nhttps://cloud.google.com/dlp/docs/inspecting-text#inspecting_a_table to\nlearn more.",
+                            "properties": {
+                                "headers": {
+                                    "items": {
+                                        "description": "General identifier of a data field in a storage service.",
+                                        "properties": {
+                                            "name": {
+                                                "description": "Name describing the field.",
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                },
+                                "rows": {
+                                    "items": {
+                                        "properties": {
+                                            "values": {
+                                                "items": {
+                                                    "description": "Set of primitive values supported by the system.\nNote that for the purposes of inspection or transformation, the number\nof bytes considered to comprise a 'Value' is based on its representation\nas a UTF-8 encoded string. For example, if 'integer_value' is set to\n123456789, the number of bytes would be counted as 9, even though an\nint64 only holds up to 8 bytes of data.",
+                                                    "properties": {
+                                                        "booleanValue": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "dateValue": {
+                                                            "description": "Represents a whole or partial calendar date, e.g. a birthday. The time of day\nand time zone are either specified elsewhere or are not significant. The date\nis relative to the Proleptic Gregorian Calendar. This can represent:\n\n* A full date, with non-zero year, month and day values\n* A month and day value, with a zero year, e.g. an anniversary\n* A year on its own, with zero month and day values\n* A year and month value, with a zero day, e.g. a credit card expiration date\n\nRelated types are google.type.TimeOfDay and `google.protobuf.Timestamp`.",
+                                                            "properties": {
+                                                                "day": {
+                                                                    "description": "Day of month. Must be from 1 to 31 and valid for the year and month, or 0\nif specifying a year by itself or a year and month where the day is not\nsignificant.",
+                                                                    "format": "int32",
+                                                                    "type": "integer"
+                                                                },
+                                                                "month": {
+                                                                    "description": "Month of year. Must be from 1 to 12, or 0 if specifying a year without a\nmonth and day.",
+                                                                    "format": "int32",
+                                                                    "type": "integer"
+                                                                },
+                                                                "year": {
+                                                                    "description": "Year of date. Must be from 1 to 9999, or 0 if specifying a date without\na year.",
+                                                                    "format": "int32",
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "dayOfWeekValue": {
+                                                            "enum": [
+                                                                "DAY_OF_WEEK_UNSPECIFIED",
+                                                                "MONDAY",
+                                                                "TUESDAY",
+                                                                "WEDNESDAY",
+                                                                "THURSDAY",
+                                                                "FRIDAY",
+                                                                "SATURDAY",
+                                                                "SUNDAY"
+                                                            ],
+                                                            "type": "string"
+                                                        },
+                                                        "floatValue": {
+                                                            "format": "double",
+                                                            "type": "number"
+                                                        },
+                                                        "integerValue": {
+                                                            "format": "int64",
+                                                            "type": "string"
+                                                        },
+                                                        "stringValue": {
+                                                            "type": "string"
+                                                        },
+                                                        "timeValue": {
+                                                            "description": "Represents a time of day. The date and time zone are either not significant\nor are specified elsewhere. An API may choose to allow leap seconds. Related\ntypes are google.type.Date and `google.protobuf.Timestamp`.",
+                                                            "properties": {
+                                                                "hours": {
+                                                                    "description": "Hours of day in 24 hour format. Should be from 0 to 23. An API may choose\nto allow the value \"24:00:00\" for scenarios like business closing time.",
+                                                                    "format": "int32",
+                                                                    "type": "integer"
+                                                                },
+                                                                "minutes": {
+                                                                    "description": "Minutes of hour of day. Must be from 0 to 59.",
+                                                                    "format": "int32",
+                                                                    "type": "integer"
+                                                                },
+                                                                "nanos": {
+                                                                    "description": "Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.",
+                                                                    "format": "int32",
+                                                                    "type": "integer"
+                                                                },
+                                                                "seconds": {
+                                                                    "description": "Seconds of minutes of the time. Must normally be from 0 to 59. An API may\nallow the value 60 if it allows leap-seconds.",
+                                                                    "format": "int32",
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "timestampValue": {
+                                                            "format": "google-datetime",
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "type": "array"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "value": {
+                            "description": "String data to inspect or redact.",
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        }
+    }
+}

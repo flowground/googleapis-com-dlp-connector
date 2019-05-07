@@ -1,0 +1,130 @@
+{
+    "type": "object",
+    "properties": {
+        "parent": {
+            "required": true,
+            "type": "string"
+        },
+        "access_token": {
+            "type": "string"
+        },
+        "alt": {
+            "type": "string",
+            "enum": [
+                "json",
+                "media",
+                "proto"
+            ],
+            "default": "json"
+        },
+        "callback": {
+            "type": "string"
+        },
+        "fields": {
+            "type": "string"
+        },
+        "key": {
+            "type": "string"
+        },
+        "oauth_token": {
+            "type": "string"
+        },
+        "prettyPrint": {
+            "type": "boolean",
+            "default": true
+        },
+        "quotaUser": {
+            "type": "string"
+        },
+        "uploadType": {
+            "type": "string"
+        },
+        "upload_protocol": {
+            "type": "string"
+        },
+        "requestBody": {
+            "description": "Request message for CreateStoredInfoType.",
+            "properties": {
+                "config": {
+                    "description": "Configuration of the storedInfoType to create.",
+                    "properties": {
+                        "description": {
+                            "description": "Description of the StoredInfoType (max 256 characters).",
+                            "type": "string"
+                        },
+                        "displayName": {
+                            "description": "Display name of the StoredInfoType (max 256 characters).",
+                            "type": "string"
+                        },
+                        "largeCustomDictionary": {
+                            "description": "StoredInfoType where findings are defined by a dictionary of phrases.",
+                            "properties": {
+                                "bigQueryField": {
+                                    "description": "Field in a BigQuery table where each cell represents a dictionary phrase.",
+                                    "properties": {
+                                        "field": {
+                                            "description": "Designated field in the BigQuery table.",
+                                            "properties": {
+                                                "name": {
+                                                    "description": "Name describing the field.",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "table": {
+                                            "description": "Source table of the field.",
+                                            "properties": {
+                                                "datasetId": {
+                                                    "description": "Dataset ID of the table.",
+                                                    "type": "string"
+                                                },
+                                                "projectId": {
+                                                    "description": "The Google Cloud Platform project ID of the project containing the table.\nIf omitted, project ID is inferred from the API call.",
+                                                    "type": "string"
+                                                },
+                                                "tableId": {
+                                                    "description": "Name of the table.",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "cloudStorageFileSet": {
+                                    "description": "Set of files containing newline-delimited lists of dictionary phrases.",
+                                    "properties": {
+                                        "url": {
+                                            "description": "The url, in the format `gs://<bucket>/<path>`. Trailing wildcard in the\npath is allowed.",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "outputPath": {
+                                    "description": "Location to store dictionary artifacts in Google Cloud Storage. These files\nwill only be accessible by project owners and the DLP API. If any of these\nartifacts are modified, the dictionary is considered invalid and can no\nlonger be used.",
+                                    "properties": {
+                                        "path": {
+                                            "description": "A url representing a file or path (no wildcards) in Cloud Storage.\nExample: gs://[BUCKET_NAME]/dictionary.txt",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
+                },
+                "storedInfoTypeId": {
+                    "description": "The storedInfoType ID can contain uppercase and lowercase letters,\nnumbers, and hyphens; that is, it must match the regular\nexpression: `[a-zA-Z\\\\d-_]+`. The maximum length is 100\ncharacters. Can be empty to allow the system to generate one.",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    }
+}

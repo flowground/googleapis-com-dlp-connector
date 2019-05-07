@@ -1,0 +1,1220 @@
+{
+    "type": "object",
+    "properties": {
+        "parent": {
+            "required": true,
+            "type": "string"
+        },
+        "access_token": {
+            "type": "string"
+        },
+        "alt": {
+            "type": "string",
+            "enum": [
+                "json",
+                "media",
+                "proto"
+            ],
+            "default": "json"
+        },
+        "callback": {
+            "type": "string"
+        },
+        "fields": {
+            "type": "string"
+        },
+        "key": {
+            "type": "string"
+        },
+        "oauth_token": {
+            "type": "string"
+        },
+        "prettyPrint": {
+            "type": "boolean",
+            "default": true
+        },
+        "quotaUser": {
+            "type": "string"
+        },
+        "uploadType": {
+            "type": "string"
+        },
+        "upload_protocol": {
+            "type": "string"
+        },
+        "requestBody": {
+            "description": "Request message for CreateDlpJobRequest. Used to initiate long running\njobs such as calculating risk metrics or inspecting Google Cloud\nStorage.",
+            "properties": {
+                "inspectJob": {
+                    "properties": {
+                        "actions": {
+                            "description": "Actions to execute at the completion of the job. Are executed in the order\nprovided.",
+                            "items": {
+                                "description": "A task to execute on the completion of a job.\nSee https://cloud.google.com/dlp/docs/concepts-actions to learn more.",
+                                "properties": {
+                                    "jobNotificationEmails": {
+                                        "description": "Enable email notification to project owners and editors on job's\ncompletion/failure.",
+                                        "properties": {},
+                                        "type": "object"
+                                    },
+                                    "pubSub": {
+                                        "description": "Publish a notification to a pubsub topic.",
+                                        "properties": {
+                                            "topic": {
+                                                "description": "Cloud Pub/Sub topic to send notifications to. The topic must have given\npublishing access rights to the DLP API service account executing\nthe long running DlpJob sending the notifications.\nFormat is projects/{project}/topics/{topic}.",
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "publishSummaryToCscc": {
+                                        "description": "Publish summary to Cloud Security Command Center (Alpha).",
+                                        "properties": {},
+                                        "type": "object"
+                                    },
+                                    "saveFindings": {
+                                        "description": "Save resulting findings in a provided location.",
+                                        "properties": {
+                                            "outputConfig": {
+                                                "description": "Cloud repository for storing output.",
+                                                "properties": {
+                                                    "outputSchema": {
+                                                        "description": "Schema used for writing the findings for Inspect jobs. This field is only\nused for Inspect and must be unspecified for Risk jobs. Columns are derived\nfrom the `Finding` object. If appending to an existing table, any columns\nfrom the predefined schema that are missing will be added. No columns in\nthe existing table will be deleted.\n\nIf unspecified, then all available columns will be used for a new table or\nan (existing) table with no schema, and no changes will be made to an\nexisting table that has a schema.",
+                                                        "enum": [
+                                                            "OUTPUT_SCHEMA_UNSPECIFIED",
+                                                            "BASIC_COLUMNS",
+                                                            "GCS_COLUMNS",
+                                                            "DATASTORE_COLUMNS",
+                                                            "BIG_QUERY_COLUMNS",
+                                                            "ALL_COLUMNS"
+                                                        ],
+                                                        "type": "string"
+                                                    },
+                                                    "table": {
+                                                        "description": "Store findings in an existing table or a new table in an existing\ndataset. If table_id is not set a new one will be generated\nfor you with the following format:\ndlp_googleapis_yyyy_mm_dd_[dlp_job_id]. Pacific timezone will be used for\ngenerating the date details.\n\nFor Inspect, each column in an existing output table must have the same\nname, type, and mode of a field in the `Finding` object.\n\nFor Risk, an existing output table should be the output of a previous\nRisk analysis job run on the same source table, with the same privacy\nmetric and quasi-identifiers. Risk jobs that analyze the same table but\ncompute a different privacy metric, or use different sets of\nquasi-identifiers, cannot store their results in the same table.",
+                                                        "properties": {
+                                                            "datasetId": {
+                                                                "description": "Dataset ID of the table.",
+                                                                "type": "string"
+                                                            },
+                                                            "projectId": {
+                                                                "description": "The Google Cloud Platform project ID of the project containing the table.\nIf omitted, project ID is inferred from the API call.",
+                                                                "type": "string"
+                                                            },
+                                                            "tableId": {
+                                                                "description": "Name of the table.",
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "type": "array"
+                        },
+                        "inspectConfig": {
+                            "description": "How and what to scan for.",
+                            "properties": {
+                                "contentOptions": {
+                                    "description": "List of options defining data content to scan.\nIf empty, text, images, and other content will be included.",
+                                    "items": {
+                                        "enum": [
+                                            "CONTENT_UNSPECIFIED",
+                                            "CONTENT_TEXT",
+                                            "CONTENT_IMAGE"
+                                        ],
+                                        "type": "string"
+                                    },
+                                    "type": "array"
+                                },
+                                "customInfoTypes": {
+                                    "description": "CustomInfoTypes provided by the user. See\nhttps://cloud.google.com/dlp/docs/creating-custom-infotypes to learn more.",
+                                    "items": {
+                                        "description": "Custom information type provided by the user. Used to find domain-specific\nsensitive information configurable to the data in question.",
+                                        "properties": {
+                                            "detectionRules": {
+                                                "description": "Set of detection rules to apply to all findings of this CustomInfoType.\nRules are applied in order that they are specified. Not supported for the\n`surrogate_type` CustomInfoType.",
+                                                "items": {
+                                                    "description": "Rule for modifying a CustomInfoType to alter behavior under certain\ncircumstances, depending on the specific details of the rule. Not supported\nfor the `surrogate_type` custom info type.",
+                                                    "properties": {
+                                                        "hotwordRule": {
+                                                            "description": "Hotword-based detection rule.",
+                                                            "properties": {
+                                                                "hotwordRegex": {
+                                                                    "description": "Regular expression pattern defining what qualifies as a hotword.",
+                                                                    "properties": {
+                                                                        "groupIndexes": {
+                                                                            "description": "The index of the submatch to extract as findings. When not\nspecified, the entire match is returned. No more than 3 may be included.",
+                                                                            "items": {
+                                                                                "format": "int32",
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "type": "array"
+                                                                        },
+                                                                        "pattern": {
+                                                                            "description": "Pattern defining the regular expression. Its syntax\n(https://github.com/google/re2/wiki/Syntax) can be found under the\ngoogle/re2 repository on GitHub.",
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                },
+                                                                "likelihoodAdjustment": {
+                                                                    "description": "Likelihood adjustment to apply to all matching findings.",
+                                                                    "properties": {
+                                                                        "fixedLikelihood": {
+                                                                            "description": "Set the likelihood of a finding to a fixed value.",
+                                                                            "enum": [
+                                                                                "LIKELIHOOD_UNSPECIFIED",
+                                                                                "VERY_UNLIKELY",
+                                                                                "UNLIKELY",
+                                                                                "POSSIBLE",
+                                                                                "LIKELY",
+                                                                                "VERY_LIKELY"
+                                                                            ],
+                                                                            "type": "string"
+                                                                        },
+                                                                        "relativeLikelihood": {
+                                                                            "description": "Increase or decrease the likelihood by the specified number of\nlevels. For example, if a finding would be `POSSIBLE` without the\ndetection rule and `relative_likelihood` is 1, then it is upgraded to\n`LIKELY`, while a value of -1 would downgrade it to `UNLIKELY`.\nLikelihood may never drop below `VERY_UNLIKELY` or exceed\n`VERY_LIKELY`, so applying an adjustment of 1 followed by an\nadjustment of -1 when base likelihood is `VERY_LIKELY` will result in\na final likelihood of `LIKELY`.",
+                                                                            "format": "int32",
+                                                                            "type": "integer"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                },
+                                                                "proximity": {
+                                                                    "description": "Proximity of the finding within which the entire hotword must reside.\nThe total length of the window cannot exceed 1000 characters. Note that\nthe finding itself will be included in the window, so that hotwords may\nbe used to match substrings of the finding itself. For example, the\ncertainty of a phone number regex \"\\(\\d{3}\\) \\d{3}-\\d{4}\" could be\nadjusted upwards if the area code is known to be the local area code of\na company office using the hotword regex \"\\(xxx\\)\", where \"xxx\"\nis the area code in question.",
+                                                                    "properties": {
+                                                                        "windowAfter": {
+                                                                            "description": "Number of characters after the finding to consider.",
+                                                                            "format": "int32",
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "windowBefore": {
+                                                                            "description": "Number of characters before the finding to consider.",
+                                                                            "format": "int32",
+                                                                            "type": "integer"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "type": "array"
+                                            },
+                                            "dictionary": {
+                                                "description": "A list of phrases to detect as a CustomInfoType.",
+                                                "properties": {
+                                                    "cloudStoragePath": {
+                                                        "description": "Newline-delimited file of words in Cloud Storage. Only a single file\nis accepted.",
+                                                        "properties": {
+                                                            "path": {
+                                                                "description": "A url representing a file or path (no wildcards) in Cloud Storage.\nExample: gs://[BUCKET_NAME]/dictionary.txt",
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "wordList": {
+                                                        "description": "List of words or phrases to search for.",
+                                                        "properties": {
+                                                            "words": {
+                                                                "description": "Words or phrases defining the dictionary. The dictionary must contain\nat least one phrase and every phrase must contain at least 2 characters\nthat are letters or digits. [required]",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                },
+                                                                "type": "array"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "exclusionType": {
+                                                "description": "If set to EXCLUSION_TYPE_EXCLUDE this infoType will not cause a finding\nto be returned. It still can be used for rules matching.",
+                                                "enum": [
+                                                    "EXCLUSION_TYPE_UNSPECIFIED",
+                                                    "EXCLUSION_TYPE_EXCLUDE"
+                                                ],
+                                                "type": "string"
+                                            },
+                                            "infoType": {
+                                                "description": "CustomInfoType can either be a new infoType, or an extension of built-in\ninfoType, when the name matches one of existing infoTypes and that infoType\nis specified in `InspectContent.info_types` field. Specifying the latter\nadds findings to the one detected by the system. If built-in info type is\nnot specified in `InspectContent.info_types` list then the name is treated\nas a custom info type.",
+                                                "properties": {
+                                                    "name": {
+                                                        "description": "Name of the information type. Either a name of your choosing when\ncreating a CustomInfoType, or one of the names listed\nat https://cloud.google.com/dlp/docs/infotypes-reference when specifying\na built-in type. InfoType names should conform to the pattern\n[a-zA-Z0-9_]{1,64}.",
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "likelihood": {
+                                                "description": "Likelihood to return for this CustomInfoType. This base value can be\naltered by a detection rule if the finding meets the criteria specified by\nthe rule. Defaults to `VERY_LIKELY` if not specified.",
+                                                "enum": [
+                                                    "LIKELIHOOD_UNSPECIFIED",
+                                                    "VERY_UNLIKELY",
+                                                    "UNLIKELY",
+                                                    "POSSIBLE",
+                                                    "LIKELY",
+                                                    "VERY_LIKELY"
+                                                ],
+                                                "type": "string"
+                                            },
+                                            "regex": {
+                                                "description": "Regular expression based CustomInfoType.",
+                                                "properties": {
+                                                    "groupIndexes": {
+                                                        "description": "The index of the submatch to extract as findings. When not\nspecified, the entire match is returned. No more than 3 may be included.",
+                                                        "items": {
+                                                            "format": "int32",
+                                                            "type": "integer"
+                                                        },
+                                                        "type": "array"
+                                                    },
+                                                    "pattern": {
+                                                        "description": "Pattern defining the regular expression. Its syntax\n(https://github.com/google/re2/wiki/Syntax) can be found under the\ngoogle/re2 repository on GitHub.",
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "storedType": {
+                                                "description": "Load an existing `StoredInfoType` resource for use in\n`InspectDataSource`. Not currently supported in `InspectContent`.",
+                                                "properties": {
+                                                    "createTime": {
+                                                        "description": "Timestamp indicating when the version of the `StoredInfoType` used for\ninspection was created. Output-only field, populated by the system.",
+                                                        "format": "google-datetime",
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
+                                                        "description": "Resource name of the requested `StoredInfoType`, for example\n`organizations/433245324/storedInfoTypes/432452342` or\n`projects/project-id/storedInfoTypes/432452342`.",
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "surrogateType": {
+                                                "description": "Message for detecting output from deidentification transformations that\nsupport reversing.",
+                                                "properties": {},
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                },
+                                "excludeInfoTypes": {
+                                    "description": "When true, excludes type information of the findings.",
+                                    "type": "boolean"
+                                },
+                                "includeQuote": {
+                                    "description": "When true, a contextual quote from the data that triggered a finding is\nincluded in the response; see Finding.quote.",
+                                    "type": "boolean"
+                                },
+                                "infoTypes": {
+                                    "description": "Restricts what info_types to look for. The values must correspond to\nInfoType values returned by ListInfoTypes or listed at\nhttps://cloud.google.com/dlp/docs/infotypes-reference.\n\nWhen no InfoTypes or CustomInfoTypes are specified in a request, the\nsystem may automatically choose what detectors to run. By default this may\nbe all types, but may change over time as detectors are updated.\n\nThe special InfoType name \"ALL_BASIC\" can be used to trigger all detectors,\nbut may change over time as new InfoTypes are added. If you need precise\ncontrol and predictability as to what detectors are run you should specify\nspecific InfoTypes listed in the reference.",
+                                    "items": {
+                                        "description": "Type of information detected by the API.",
+                                        "properties": {
+                                            "name": {
+                                                "description": "Name of the information type. Either a name of your choosing when\ncreating a CustomInfoType, or one of the names listed\nat https://cloud.google.com/dlp/docs/infotypes-reference when specifying\na built-in type. InfoType names should conform to the pattern\n[a-zA-Z0-9_]{1,64}.",
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                },
+                                "limits": {
+                                    "properties": {
+                                        "maxFindingsPerInfoType": {
+                                            "description": "Configuration of findings limit given for specified infoTypes.",
+                                            "items": {
+                                                "description": "Max findings configuration per infoType, per content item or long\nrunning DlpJob.",
+                                                "properties": {
+                                                    "infoType": {
+                                                        "description": "Type of information the findings limit applies to. Only one limit per\ninfo_type should be provided. If InfoTypeLimit does not have an\ninfo_type, the DLP API applies the limit against all info_types that\nare found but not specified in another InfoTypeLimit.",
+                                                        "properties": {
+                                                            "name": {
+                                                                "description": "Name of the information type. Either a name of your choosing when\ncreating a CustomInfoType, or one of the names listed\nat https://cloud.google.com/dlp/docs/infotypes-reference when specifying\na built-in type. InfoType names should conform to the pattern\n[a-zA-Z0-9_]{1,64}.",
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "maxFindings": {
+                                                        "description": "Max findings limit for the given infoType.",
+                                                        "format": "int32",
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "type": "array"
+                                        },
+                                        "maxFindingsPerItem": {
+                                            "description": "Max number of findings that will be returned for each item scanned.\nWhen set within `InspectDataSourceRequest`,\nthe maximum returned is 2000 regardless if this is set higher.\nWhen set within `InspectContentRequest`, this field is ignored.",
+                                            "format": "int32",
+                                            "type": "integer"
+                                        },
+                                        "maxFindingsPerRequest": {
+                                            "description": "Max number of findings that will be returned per request/job.\nWhen set within `InspectContentRequest`, the maximum returned is 2000\nregardless if this is set higher.",
+                                            "format": "int32",
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "minLikelihood": {
+                                    "description": "Only returns findings equal or above this threshold. The default is\nPOSSIBLE.\nSee https://cloud.google.com/dlp/docs/likelihood to learn more.",
+                                    "enum": [
+                                        "LIKELIHOOD_UNSPECIFIED",
+                                        "VERY_UNLIKELY",
+                                        "UNLIKELY",
+                                        "POSSIBLE",
+                                        "LIKELY",
+                                        "VERY_LIKELY"
+                                    ],
+                                    "type": "string"
+                                },
+                                "ruleSet": {
+                                    "description": "Set of rules to apply to the findings for this InspectConfig.\nExclusion rules, contained in the set are executed in the end, other\nrules are executed in the order they are specified for each info type.",
+                                    "items": {
+                                        "description": "Rule set for modifying a set of infoTypes to alter behavior under certain\ncircumstances, depending on the specific details of the rules within the set.",
+                                        "properties": {
+                                            "infoTypes": {
+                                                "description": "List of infoTypes this rule set is applied to.",
+                                                "items": {
+                                                    "description": "Type of information detected by the API.",
+                                                    "properties": {
+                                                        "name": {
+                                                            "description": "Name of the information type. Either a name of your choosing when\ncreating a CustomInfoType, or one of the names listed\nat https://cloud.google.com/dlp/docs/infotypes-reference when specifying\na built-in type. InfoType names should conform to the pattern\n[a-zA-Z0-9_]{1,64}.",
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "type": "array"
+                                            },
+                                            "rules": {
+                                                "description": "Set of rules to be applied to infoTypes. The rules are applied in order.",
+                                                "items": {
+                                                    "description": "A single inspection rule to be applied to infoTypes, specified in\n`InspectionRuleSet`.",
+                                                    "properties": {
+                                                        "exclusionRule": {
+                                                            "description": "Exclusion rule.",
+                                                            "properties": {
+                                                                "dictionary": {
+                                                                    "description": "Dictionary which defines the rule.",
+                                                                    "properties": {
+                                                                        "cloudStoragePath": {
+                                                                            "description": "Newline-delimited file of words in Cloud Storage. Only a single file\nis accepted.",
+                                                                            "properties": {
+                                                                                "path": {
+                                                                                    "description": "A url representing a file or path (no wildcards) in Cloud Storage.\nExample: gs://[BUCKET_NAME]/dictionary.txt",
+                                                                                    "type": "string"
+                                                                                }
+                                                                            },
+                                                                            "type": "object"
+                                                                        },
+                                                                        "wordList": {
+                                                                            "description": "List of words or phrases to search for.",
+                                                                            "properties": {
+                                                                                "words": {
+                                                                                    "description": "Words or phrases defining the dictionary. The dictionary must contain\nat least one phrase and every phrase must contain at least 2 characters\nthat are letters or digits. [required]",
+                                                                                    "items": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "type": "array"
+                                                                                }
+                                                                            },
+                                                                            "type": "object"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                },
+                                                                "excludeInfoTypes": {
+                                                                    "description": "Set of infoTypes for which findings would affect this rule.",
+                                                                    "properties": {
+                                                                        "infoTypes": {
+                                                                            "description": "InfoType list in ExclusionRule rule drops a finding when it overlaps or\ncontained within with a finding of an infoType from this list. For\nexample, for `InspectionRuleSet.info_types` containing \"PHONE_NUMBER\"` and\n`exclusion_rule` containing `exclude_info_types.info_types` with\n\"EMAIL_ADDRESS\" the phone number findings are dropped if they overlap\nwith EMAIL_ADDRESS finding.\nThat leads to \"555-222-2222@example.org\" to generate only a single\nfinding, namely email address.",
+                                                                            "items": {
+                                                                                "description": "Type of information detected by the API.",
+                                                                                "properties": {
+                                                                                    "name": {
+                                                                                        "description": "Name of the information type. Either a name of your choosing when\ncreating a CustomInfoType, or one of the names listed\nat https://cloud.google.com/dlp/docs/infotypes-reference when specifying\na built-in type. InfoType names should conform to the pattern\n[a-zA-Z0-9_]{1,64}.",
+                                                                                        "type": "string"
+                                                                                    }
+                                                                                },
+                                                                                "type": "object"
+                                                                            },
+                                                                            "type": "array"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                },
+                                                                "matchingType": {
+                                                                    "description": "How the rule is applied, see MatchingType documentation for details.",
+                                                                    "enum": [
+                                                                        "MATCHING_TYPE_UNSPECIFIED",
+                                                                        "MATCHING_TYPE_FULL_MATCH",
+                                                                        "MATCHING_TYPE_PARTIAL_MATCH",
+                                                                        "MATCHING_TYPE_INVERSE_MATCH"
+                                                                    ],
+                                                                    "type": "string"
+                                                                },
+                                                                "regex": {
+                                                                    "description": "Regular expression which defines the rule.",
+                                                                    "properties": {
+                                                                        "groupIndexes": {
+                                                                            "description": "The index of the submatch to extract as findings. When not\nspecified, the entire match is returned. No more than 3 may be included.",
+                                                                            "items": {
+                                                                                "format": "int32",
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "type": "array"
+                                                                        },
+                                                                        "pattern": {
+                                                                            "description": "Pattern defining the regular expression. Its syntax\n(https://github.com/google/re2/wiki/Syntax) can be found under the\ngoogle/re2 repository on GitHub.",
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "hotwordRule": {
+                                                            "description": "Hotword-based detection rule.",
+                                                            "properties": {
+                                                                "hotwordRegex": {
+                                                                    "description": "Regular expression pattern defining what qualifies as a hotword.",
+                                                                    "properties": {
+                                                                        "groupIndexes": {
+                                                                            "description": "The index of the submatch to extract as findings. When not\nspecified, the entire match is returned. No more than 3 may be included.",
+                                                                            "items": {
+                                                                                "format": "int32",
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "type": "array"
+                                                                        },
+                                                                        "pattern": {
+                                                                            "description": "Pattern defining the regular expression. Its syntax\n(https://github.com/google/re2/wiki/Syntax) can be found under the\ngoogle/re2 repository on GitHub.",
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                },
+                                                                "likelihoodAdjustment": {
+                                                                    "description": "Likelihood adjustment to apply to all matching findings.",
+                                                                    "properties": {
+                                                                        "fixedLikelihood": {
+                                                                            "description": "Set the likelihood of a finding to a fixed value.",
+                                                                            "enum": [
+                                                                                "LIKELIHOOD_UNSPECIFIED",
+                                                                                "VERY_UNLIKELY",
+                                                                                "UNLIKELY",
+                                                                                "POSSIBLE",
+                                                                                "LIKELY",
+                                                                                "VERY_LIKELY"
+                                                                            ],
+                                                                            "type": "string"
+                                                                        },
+                                                                        "relativeLikelihood": {
+                                                                            "description": "Increase or decrease the likelihood by the specified number of\nlevels. For example, if a finding would be `POSSIBLE` without the\ndetection rule and `relative_likelihood` is 1, then it is upgraded to\n`LIKELY`, while a value of -1 would downgrade it to `UNLIKELY`.\nLikelihood may never drop below `VERY_UNLIKELY` or exceed\n`VERY_LIKELY`, so applying an adjustment of 1 followed by an\nadjustment of -1 when base likelihood is `VERY_LIKELY` will result in\na final likelihood of `LIKELY`.",
+                                                                            "format": "int32",
+                                                                            "type": "integer"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                },
+                                                                "proximity": {
+                                                                    "description": "Proximity of the finding within which the entire hotword must reside.\nThe total length of the window cannot exceed 1000 characters. Note that\nthe finding itself will be included in the window, so that hotwords may\nbe used to match substrings of the finding itself. For example, the\ncertainty of a phone number regex \"\\(\\d{3}\\) \\d{3}-\\d{4}\" could be\nadjusted upwards if the area code is known to be the local area code of\na company office using the hotword regex \"\\(xxx\\)\", where \"xxx\"\nis the area code in question.",
+                                                                    "properties": {
+                                                                        "windowAfter": {
+                                                                            "description": "Number of characters after the finding to consider.",
+                                                                            "format": "int32",
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "windowBefore": {
+                                                                            "description": "Number of characters before the finding to consider.",
+                                                                            "format": "int32",
+                                                                            "type": "integer"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "type": "array"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "inspectTemplateName": {
+                            "description": "If provided, will be used as the default for all values in InspectConfig.\n`inspect_config` will be merged into the values persisted as part of the\ntemplate.",
+                            "type": "string"
+                        },
+                        "storageConfig": {
+                            "description": "The data to scan.",
+                            "properties": {
+                                "bigQueryOptions": {
+                                    "description": "BigQuery options specification.",
+                                    "properties": {
+                                        "excludedFields": {
+                                            "description": "References to fields excluded from scanning. This allows you to skip\ninspection of entire columns which you know have no findings.",
+                                            "items": {
+                                                "description": "General identifier of a data field in a storage service.",
+                                                "properties": {
+                                                    "name": {
+                                                        "description": "Name describing the field.",
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "type": "array"
+                                        },
+                                        "identifyingFields": {
+                                            "description": "References to fields uniquely identifying rows within the table.\nNested fields in the format, like `person.birthdate.year`, are allowed.",
+                                            "items": {
+                                                "description": "General identifier of a data field in a storage service.",
+                                                "properties": {
+                                                    "name": {
+                                                        "description": "Name describing the field.",
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "type": "array"
+                                        },
+                                        "rowsLimit": {
+                                            "description": "Max number of rows to scan. If the table has more rows than this value, the\nrest of the rows are omitted. If not set, or if set to 0, all rows will be\nscanned. Only one of rows_limit and rows_limit_percent can be specified.\nCannot be used in conjunction with TimespanConfig.",
+                                            "format": "int64",
+                                            "type": "string"
+                                        },
+                                        "rowsLimitPercent": {
+                                            "description": "Max percentage of rows to scan. The rest are omitted. The number of rows\nscanned is rounded down. Must be between 0 and 100, inclusively. Both 0 and\n100 means no limit. Defaults to 0. Only one of rows_limit and\nrows_limit_percent can be specified. Cannot be used in conjunction with\nTimespanConfig.",
+                                            "format": "int32",
+                                            "type": "integer"
+                                        },
+                                        "sampleMethod": {
+                                            "enum": [
+                                                "SAMPLE_METHOD_UNSPECIFIED",
+                                                "TOP",
+                                                "RANDOM_START"
+                                            ],
+                                            "type": "string"
+                                        },
+                                        "tableReference": {
+                                            "description": "Complete BigQuery table reference.",
+                                            "properties": {
+                                                "datasetId": {
+                                                    "description": "Dataset ID of the table.",
+                                                    "type": "string"
+                                                },
+                                                "projectId": {
+                                                    "description": "The Google Cloud Platform project ID of the project containing the table.\nIf omitted, project ID is inferred from the API call.",
+                                                    "type": "string"
+                                                },
+                                                "tableId": {
+                                                    "description": "Name of the table.",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "cloudStorageOptions": {
+                                    "description": "Google Cloud Storage options specification.",
+                                    "properties": {
+                                        "bytesLimitPerFile": {
+                                            "description": "Max number of bytes to scan from a file. If a scanned file's size is bigger\nthan this value then the rest of the bytes are omitted. Only one\nof bytes_limit_per_file and bytes_limit_per_file_percent can be specified.",
+                                            "format": "int64",
+                                            "type": "string"
+                                        },
+                                        "bytesLimitPerFilePercent": {
+                                            "description": "Max percentage of bytes to scan from a file. The rest are omitted. The\nnumber of bytes scanned is rounded down. Must be between 0 and 100,\ninclusively. Both 0 and 100 means no limit. Defaults to 0. Only one\nof bytes_limit_per_file and bytes_limit_per_file_percent can be specified.",
+                                            "format": "int32",
+                                            "type": "integer"
+                                        },
+                                        "fileSet": {
+                                            "description": "The set of one or more files to scan.",
+                                            "properties": {
+                                                "regexFileSet": {
+                                                    "description": "The regex-filtered set of files to scan. Exactly one of `url` or\n`regex_file_set` must be set.",
+                                                    "properties": {
+                                                        "bucketName": {
+                                                            "description": "The name of a Cloud Storage bucket. Required.",
+                                                            "type": "string"
+                                                        },
+                                                        "excludeRegex": {
+                                                            "description": "A list of regular expressions matching file paths to exclude. All files in\nthe bucket that match at least one of these regular expressions will be\nexcluded from the scan.\n\nRegular expressions use RE2\n[syntax](https://github.com/google/re2/wiki/Syntax); a guide can be found\nunder the google/re2 repository on GitHub.",
+                                                            "items": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": "array"
+                                                        },
+                                                        "includeRegex": {
+                                                            "description": "A list of regular expressions matching file paths to include. All files in\nthe bucket that match at least one of these regular expressions will be\nincluded in the set of files, except for those that also match an item in\n`exclude_regex`. Leaving this field empty will match all files by default\n(this is equivalent to including `.*` in the list).\n\nRegular expressions use RE2\n[syntax](https://github.com/google/re2/wiki/Syntax); a guide can be found\nunder the google/re2 repository on GitHub.",
+                                                            "items": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": "array"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "url": {
+                                                    "description": "The Cloud Storage url of the file(s) to scan, in the format\n`gs://<bucket>/<path>`. Trailing wildcard in the path is allowed.\n\nIf the url ends in a trailing slash, the bucket or directory represented\nby the url will be scanned non-recursively (content in sub-directories\nwill not be scanned). This means that `gs://mybucket/` is equivalent to\n`gs://mybucket/*`, and `gs://mybucket/directory/` is equivalent to\n`gs://mybucket/directory/*`.\n\nExactly one of `url` or `regex_file_set` must be set.",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "fileTypes": {
+                                            "description": "List of file type groups to include in the scan.\nIf empty, all files are scanned and available data format processors\nare applied. In addition, the binary content of the selected files\nis always scanned as well.",
+                                            "items": {
+                                                "enum": [
+                                                    "FILE_TYPE_UNSPECIFIED",
+                                                    "BINARY_FILE",
+                                                    "TEXT_FILE",
+                                                    "IMAGE"
+                                                ],
+                                                "type": "string"
+                                            },
+                                            "type": "array"
+                                        },
+                                        "filesLimitPercent": {
+                                            "description": "Limits the number of files to scan to this percentage of the input FileSet.\nNumber of files scanned is rounded down. Must be between 0 and 100,\ninclusively. Both 0 and 100 means no limit. Defaults to 0.",
+                                            "format": "int32",
+                                            "type": "integer"
+                                        },
+                                        "sampleMethod": {
+                                            "enum": [
+                                                "SAMPLE_METHOD_UNSPECIFIED",
+                                                "TOP",
+                                                "RANDOM_START"
+                                            ],
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "datastoreOptions": {
+                                    "description": "Google Cloud Datastore options specification.",
+                                    "properties": {
+                                        "kind": {
+                                            "description": "The kind to process.",
+                                            "properties": {
+                                                "name": {
+                                                    "description": "The name of the kind.",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "partitionId": {
+                                            "description": "A partition ID identifies a grouping of entities. The grouping is always\nby project and namespace, however the namespace ID may be empty.",
+                                            "properties": {
+                                                "namespaceId": {
+                                                    "description": "If not empty, the ID of the namespace to which the entities belong.",
+                                                    "type": "string"
+                                                },
+                                                "projectId": {
+                                                    "description": "The ID of the project to which the entities belong.",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "timespanConfig": {
+                                    "description": "Configuration of the timespan of the items to include in scanning.\nCurrently only supported when inspecting Google Cloud Storage and BigQuery.",
+                                    "properties": {
+                                        "enableAutoPopulationOfTimespanConfig": {
+                                            "description": "When the job is started by a JobTrigger we will automatically figure out\na valid start_time to avoid scanning files that have not been modified\nsince the last time the JobTrigger executed. This will be based on the\ntime of the execution of the last run of the JobTrigger.",
+                                            "type": "boolean"
+                                        },
+                                        "endTime": {
+                                            "description": "Exclude files or rows newer than this value.\nIf set to zero, no upper time limit is applied.",
+                                            "format": "google-datetime",
+                                            "type": "string"
+                                        },
+                                        "startTime": {
+                                            "description": "Exclude files or rows older than this value.",
+                                            "format": "google-datetime",
+                                            "type": "string"
+                                        },
+                                        "timestampField": {
+                                            "description": "Specification of the field containing the timestamp of scanned items.\nUsed for data sources like Datastore or BigQuery.\nIf not specified for BigQuery, table last modification timestamp\nis checked against given time span.\nThe valid data types of the timestamp field are:\nfor BigQuery - timestamp, date, datetime;\nfor Datastore - timestamp.\nDatastore entity will be scanned if the timestamp property does not exist\nor its value is empty or invalid.",
+                                            "properties": {
+                                                "name": {
+                                                    "description": "Name describing the field.",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
+                },
+                "jobId": {
+                    "description": "The job id can contain uppercase and lowercase letters,\nnumbers, and hyphens; that is, it must match the regular\nexpression: `[a-zA-Z\\\\d-_]+`. The maximum length is 100\ncharacters. Can be empty to allow the system to generate one.",
+                    "type": "string"
+                },
+                "riskJob": {
+                    "description": "Configuration for a risk analysis job. See\nhttps://cloud.google.com/dlp/docs/concepts-risk-analysis to learn more.",
+                    "properties": {
+                        "actions": {
+                            "description": "Actions to execute at the completion of the job. Are executed in the order\nprovided.",
+                            "items": {
+                                "description": "A task to execute on the completion of a job.\nSee https://cloud.google.com/dlp/docs/concepts-actions to learn more.",
+                                "properties": {
+                                    "jobNotificationEmails": {
+                                        "description": "Enable email notification to project owners and editors on job's\ncompletion/failure.",
+                                        "properties": {},
+                                        "type": "object"
+                                    },
+                                    "pubSub": {
+                                        "description": "Publish a notification to a pubsub topic.",
+                                        "properties": {
+                                            "topic": {
+                                                "description": "Cloud Pub/Sub topic to send notifications to. The topic must have given\npublishing access rights to the DLP API service account executing\nthe long running DlpJob sending the notifications.\nFormat is projects/{project}/topics/{topic}.",
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "publishSummaryToCscc": {
+                                        "description": "Publish summary to Cloud Security Command Center (Alpha).",
+                                        "properties": {},
+                                        "type": "object"
+                                    },
+                                    "saveFindings": {
+                                        "description": "Save resulting findings in a provided location.",
+                                        "properties": {
+                                            "outputConfig": {
+                                                "description": "Cloud repository for storing output.",
+                                                "properties": {
+                                                    "outputSchema": {
+                                                        "description": "Schema used for writing the findings for Inspect jobs. This field is only\nused for Inspect and must be unspecified for Risk jobs. Columns are derived\nfrom the `Finding` object. If appending to an existing table, any columns\nfrom the predefined schema that are missing will be added. No columns in\nthe existing table will be deleted.\n\nIf unspecified, then all available columns will be used for a new table or\nan (existing) table with no schema, and no changes will be made to an\nexisting table that has a schema.",
+                                                        "enum": [
+                                                            "OUTPUT_SCHEMA_UNSPECIFIED",
+                                                            "BASIC_COLUMNS",
+                                                            "GCS_COLUMNS",
+                                                            "DATASTORE_COLUMNS",
+                                                            "BIG_QUERY_COLUMNS",
+                                                            "ALL_COLUMNS"
+                                                        ],
+                                                        "type": "string"
+                                                    },
+                                                    "table": {
+                                                        "description": "Store findings in an existing table or a new table in an existing\ndataset. If table_id is not set a new one will be generated\nfor you with the following format:\ndlp_googleapis_yyyy_mm_dd_[dlp_job_id]. Pacific timezone will be used for\ngenerating the date details.\n\nFor Inspect, each column in an existing output table must have the same\nname, type, and mode of a field in the `Finding` object.\n\nFor Risk, an existing output table should be the output of a previous\nRisk analysis job run on the same source table, with the same privacy\nmetric and quasi-identifiers. Risk jobs that analyze the same table but\ncompute a different privacy metric, or use different sets of\nquasi-identifiers, cannot store their results in the same table.",
+                                                        "properties": {
+                                                            "datasetId": {
+                                                                "description": "Dataset ID of the table.",
+                                                                "type": "string"
+                                                            },
+                                                            "projectId": {
+                                                                "description": "The Google Cloud Platform project ID of the project containing the table.\nIf omitted, project ID is inferred from the API call.",
+                                                                "type": "string"
+                                                            },
+                                                            "tableId": {
+                                                                "description": "Name of the table.",
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "type": "array"
+                        },
+                        "privacyMetric": {
+                            "description": "Privacy metric to compute.",
+                            "properties": {
+                                "categoricalStatsConfig": {
+                                    "description": "Compute numerical stats over an individual column, including\nnumber of distinct values and value count distribution.",
+                                    "properties": {
+                                        "field": {
+                                            "description": "Field to compute categorical stats on. All column types are\nsupported except for arrays and structs. However, it may be more\ninformative to use NumericalStats when the field type is supported,\ndepending on the data.",
+                                            "properties": {
+                                                "name": {
+                                                    "description": "Name describing the field.",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "deltaPresenceEstimationConfig": {
+                                    "description": "δ-presence metric, used to estimate how likely it is for an attacker to\nfigure out that one given individual appears in a de-identified dataset.\nSimilarly to the k-map metric, we cannot compute δ-presence exactly without\nknowing the attack dataset, so we use a statistical model instead.",
+                                    "properties": {
+                                        "auxiliaryTables": {
+                                            "description": "Several auxiliary tables can be used in the analysis. Each custom_tag\nused to tag a quasi-identifiers field must appear in exactly one\nfield of one auxiliary table.",
+                                            "items": {
+                                                "description": "An auxiliary table containing statistical information on the relative\nfrequency of different quasi-identifiers values. It has one or several\nquasi-identifiers columns, and one column that indicates the relative\nfrequency of each quasi-identifier tuple.\nIf a tuple is present in the data but not in the auxiliary table, the\ncorresponding relative frequency is assumed to be zero (and thus, the\ntuple is highly reidentifiable).",
+                                                "properties": {
+                                                    "quasiIds": {
+                                                        "description": "Quasi-identifier columns. [required]",
+                                                        "items": {
+                                                            "description": "A quasi-identifier column has a custom_tag, used to know which column\nin the data corresponds to which column in the statistical model.",
+                                                            "properties": {
+                                                                "customTag": {
+                                                                    "type": "string"
+                                                                },
+                                                                "field": {
+                                                                    "description": "General identifier of a data field in a storage service.",
+                                                                    "properties": {
+                                                                        "name": {
+                                                                            "description": "Name describing the field.",
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "type": "array"
+                                                    },
+                                                    "relativeFrequency": {
+                                                        "description": "The relative frequency column must contain a floating-point number\nbetween 0 and 1 (inclusive). Null values are assumed to be zero.\n[required]",
+                                                        "properties": {
+                                                            "name": {
+                                                                "description": "Name describing the field.",
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "table": {
+                                                        "description": "Auxiliary table location. [required]",
+                                                        "properties": {
+                                                            "datasetId": {
+                                                                "description": "Dataset ID of the table.",
+                                                                "type": "string"
+                                                            },
+                                                            "projectId": {
+                                                                "description": "The Google Cloud Platform project ID of the project containing the table.\nIf omitted, project ID is inferred from the API call.",
+                                                                "type": "string"
+                                                            },
+                                                            "tableId": {
+                                                                "description": "Name of the table.",
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "type": "array"
+                                        },
+                                        "quasiIds": {
+                                            "description": "Fields considered to be quasi-identifiers. No two fields can have the\nsame tag. [required]",
+                                            "items": {
+                                                "description": "A column with a semantic tag attached.",
+                                                "properties": {
+                                                    "customTag": {
+                                                        "description": "A column can be tagged with a custom tag. In this case, the user must\nindicate an auxiliary table that contains statistical information on\nthe possible values of this column (below).",
+                                                        "type": "string"
+                                                    },
+                                                    "field": {
+                                                        "description": "Identifies the column. [required]",
+                                                        "properties": {
+                                                            "name": {
+                                                                "description": "Name describing the field.",
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "inferred": {
+                                                        "description": "If no semantic tag is indicated, we infer the statistical model from\nthe distribution of values in the input data",
+                                                        "properties": {},
+                                                        "type": "object"
+                                                    },
+                                                    "infoType": {
+                                                        "description": "A column can be tagged with a InfoType to use the relevant public\ndataset as a statistical model of population, if available. We\ncurrently support US ZIP codes, region codes, ages and genders.\nTo programmatically obtain the list of supported InfoTypes, use\nListInfoTypes with the supported_by=RISK_ANALYSIS filter.",
+                                                        "properties": {
+                                                            "name": {
+                                                                "description": "Name of the information type. Either a name of your choosing when\ncreating a CustomInfoType, or one of the names listed\nat https://cloud.google.com/dlp/docs/infotypes-reference when specifying\na built-in type. InfoType names should conform to the pattern\n[a-zA-Z0-9_]{1,64}.",
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "type": "array"
+                                        },
+                                        "regionCode": {
+                                            "description": "ISO 3166-1 alpha-2 region code to use in the statistical modeling.\nRequired if no column is tagged with a region-specific InfoType (like\nUS_ZIP_5) or a region code.",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "kAnonymityConfig": {
+                                    "description": "k-anonymity metric, used for analysis of reidentification risk.",
+                                    "properties": {
+                                        "entityId": {
+                                            "description": "Optional message indicating that multiple rows might be associated to a\nsingle individual. If the same entity_id is associated to multiple\nquasi-identifier tuples over distinct rows, we consider the entire\ncollection of tuples as the composite quasi-identifier. This collection\nis a multiset: the order in which the different tuples appear in the\ndataset is ignored, but their frequency is taken into account.\n\nImportant note: a maximum of 1000 rows can be associated to a single\nentity ID. If more rows are associated with the same entity ID, some\nmight be ignored.",
+                                            "properties": {
+                                                "field": {
+                                                    "description": "Composite key indicating which field contains the entity identifier.",
+                                                    "properties": {
+                                                        "name": {
+                                                            "description": "Name describing the field.",
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "quasiIds": {
+                                            "description": "Set of fields to compute k-anonymity over. When multiple fields are\nspecified, they are considered a single composite key. Structs and\nrepeated data types are not supported; however, nested fields are\nsupported so long as they are not structs themselves or nested within\na repeated field.",
+                                            "items": {
+                                                "description": "General identifier of a data field in a storage service.",
+                                                "properties": {
+                                                    "name": {
+                                                        "description": "Name describing the field.",
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "type": "array"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "kMapEstimationConfig": {
+                                    "description": "Reidentifiability metric. This corresponds to a risk model similar to what\nis called \"journalist risk\" in the literature, except the attack dataset is\nstatistically modeled instead of being perfectly known. This can be done\nusing publicly available data (like the US Census), or using a custom\nstatistical model (indicated as one or several BigQuery tables), or by\nextrapolating from the distribution of values in the input dataset.\nA column with a semantic tag attached.",
+                                    "properties": {
+                                        "auxiliaryTables": {
+                                            "description": "Several auxiliary tables can be used in the analysis. Each custom_tag\nused to tag a quasi-identifiers column must appear in exactly one column\nof one auxiliary table.",
+                                            "items": {
+                                                "description": "An auxiliary table contains statistical information on the relative\nfrequency of different quasi-identifiers values. It has one or several\nquasi-identifiers columns, and one column that indicates the relative\nfrequency of each quasi-identifier tuple.\nIf a tuple is present in the data but not in the auxiliary table, the\ncorresponding relative frequency is assumed to be zero (and thus, the\ntuple is highly reidentifiable).",
+                                                "properties": {
+                                                    "quasiIds": {
+                                                        "description": "Quasi-identifier columns. [required]",
+                                                        "items": {
+                                                            "description": "A quasi-identifier column has a custom_tag, used to know which column\nin the data corresponds to which column in the statistical model.",
+                                                            "properties": {
+                                                                "customTag": {
+                                                                    "type": "string"
+                                                                },
+                                                                "field": {
+                                                                    "description": "General identifier of a data field in a storage service.",
+                                                                    "properties": {
+                                                                        "name": {
+                                                                            "description": "Name describing the field.",
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "type": "array"
+                                                    },
+                                                    "relativeFrequency": {
+                                                        "description": "The relative frequency column must contain a floating-point number\nbetween 0 and 1 (inclusive). Null values are assumed to be zero.\n[required]",
+                                                        "properties": {
+                                                            "name": {
+                                                                "description": "Name describing the field.",
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "table": {
+                                                        "description": "Auxiliary table location. [required]",
+                                                        "properties": {
+                                                            "datasetId": {
+                                                                "description": "Dataset ID of the table.",
+                                                                "type": "string"
+                                                            },
+                                                            "projectId": {
+                                                                "description": "The Google Cloud Platform project ID of the project containing the table.\nIf omitted, project ID is inferred from the API call.",
+                                                                "type": "string"
+                                                            },
+                                                            "tableId": {
+                                                                "description": "Name of the table.",
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "type": "array"
+                                        },
+                                        "quasiIds": {
+                                            "description": "Fields considered to be quasi-identifiers. No two columns can have the\nsame tag. [required]",
+                                            "items": {
+                                                "properties": {
+                                                    "customTag": {
+                                                        "description": "A column can be tagged with a custom tag. In this case, the user must\nindicate an auxiliary table that contains statistical information on\nthe possible values of this column (below).",
+                                                        "type": "string"
+                                                    },
+                                                    "field": {
+                                                        "description": "Identifies the column. [required]",
+                                                        "properties": {
+                                                            "name": {
+                                                                "description": "Name describing the field.",
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "inferred": {
+                                                        "description": "If no semantic tag is indicated, we infer the statistical model from\nthe distribution of values in the input data",
+                                                        "properties": {},
+                                                        "type": "object"
+                                                    },
+                                                    "infoType": {
+                                                        "description": "A column can be tagged with a InfoType to use the relevant public\ndataset as a statistical model of population, if available. We\ncurrently support US ZIP codes, region codes, ages and genders.\nTo programmatically obtain the list of supported InfoTypes, use\nListInfoTypes with the supported_by=RISK_ANALYSIS filter.",
+                                                        "properties": {
+                                                            "name": {
+                                                                "description": "Name of the information type. Either a name of your choosing when\ncreating a CustomInfoType, or one of the names listed\nat https://cloud.google.com/dlp/docs/infotypes-reference when specifying\na built-in type. InfoType names should conform to the pattern\n[a-zA-Z0-9_]{1,64}.",
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "type": "array"
+                                        },
+                                        "regionCode": {
+                                            "description": "ISO 3166-1 alpha-2 region code to use in the statistical modeling.\nRequired if no column is tagged with a region-specific InfoType (like\nUS_ZIP_5) or a region code.",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "lDiversityConfig": {
+                                    "description": "l-diversity metric, used for analysis of reidentification risk.",
+                                    "properties": {
+                                        "quasiIds": {
+                                            "description": "Set of quasi-identifiers indicating how equivalence classes are\ndefined for the l-diversity computation. When multiple fields are\nspecified, they are considered a single composite key.",
+                                            "items": {
+                                                "description": "General identifier of a data field in a storage service.",
+                                                "properties": {
+                                                    "name": {
+                                                        "description": "Name describing the field.",
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "type": "array"
+                                        },
+                                        "sensitiveAttribute": {
+                                            "description": "Sensitive field for computing the l-value.",
+                                            "properties": {
+                                                "name": {
+                                                    "description": "Name describing the field.",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "numericalStatsConfig": {
+                                    "description": "Compute numerical stats over an individual column, including\nmin, max, and quantiles.",
+                                    "properties": {
+                                        "field": {
+                                            "description": "Field to compute numerical stats on. Supported types are\ninteger, float, date, datetime, timestamp, time.",
+                                            "properties": {
+                                                "name": {
+                                                    "description": "Name describing the field.",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "sourceTable": {
+                            "description": "Input dataset to compute metrics over.",
+                            "properties": {
+                                "datasetId": {
+                                    "description": "Dataset ID of the table.",
+                                    "type": "string"
+                                },
+                                "projectId": {
+                                    "description": "The Google Cloud Platform project ID of the project containing the table.\nIf omitted, project ID is inferred from the API call.",
+                                    "type": "string"
+                                },
+                                "tableId": {
+                                    "description": "Name of the table.",
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        }
+    }
+}
